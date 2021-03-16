@@ -25,6 +25,18 @@ After that specify the path dependency in your `Cargo.toml` like that:
 enry = { path = "path/to/submodule/rs-enry/" }
 ```
 
+Add search path for library into your `rustc` flags, possible way of doing this is to add following to your `.cargo/config`:
+
+```toml
+# platform here should correspond to your target platform
+[target.platform.enry]
+rustc-link-search = ["path/to/rs-enry/go-enry/.shared"]
+rustc-link-lib = ["enry"]
+```
+
+Full list of platforms supported by Rust can be found [here](https://doc.rust-lang.org/nightly/rustc/platform-support.html).
+
+
 ## Example
 
 ```rust

@@ -21,6 +21,7 @@ extern "C" {
     fn GetLanguageByModeline(content: GoSlice) -> GoGuess;
     fn GetLanguageByShebang(content: GoSlice) -> GoGuess;
     fn GetLanguageByVimModeline(content: GoSlice) -> GoGuess;
+    fn GetLanguageByEmacsModeline(content: GoSlice) -> GoGuess;
 
     fn IsBinary(data: GoSlice) -> c_uchar;
     fn IsConfiguration(path: GoString) -> c_uchar;
@@ -113,6 +114,11 @@ pub fn get_language_by_shebang(content: &str) -> Guess {
 pub fn get_language_by_vim_modeline(content: &str) -> Guess {
     let c_content = CString::new(content).unwrap();
     unsafe { Guess::from(GetLanguageByVimModeline(c_content.as_go_slice())) }
+}
+
+pub fn get_language_by_emacs_modeline(content: &str) -> Guess {
+    let c_content = CString::new(content).unwrap();
+    unsafe { Guess::from(GetLanguageByEmacsModeline(c_content.as_go_slice())) }
 }
 
 pub fn is_binary(data: &str) -> bool {

@@ -12,8 +12,8 @@ pub struct GoGuess {
 
 #[derive(Debug)]
 pub struct Guess {
-    language: String,
-    safe: bool,
+    pub language: String,
+    pub safe: bool,
 }
 
 impl From<GoGuess> for Guess {

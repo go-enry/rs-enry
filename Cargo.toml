@@ -8,6 +8,5 @@ edition = "2018"
 name = "enry"
 path = "src/lib.rs"
 
-[[bin]]
-name = "enry-test"
-path = "src/test.rs"
+[dev-dependencies]
+rstest = "0.6.4"

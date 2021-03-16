@@ -51,8 +51,8 @@ pub fn get_languages(filename: &str, content: &str) -> Vec<String> {
 }
 
 pub fn get_language_by_content(filename: &str, content: &str) -> Guess {
-    let c_filename = CString::new(filename).expect("Can't construct string");
-    let c_content = CString::new(content).expect("Can't construct content string");
+    let c_filename = CString::new(filename).unwrap();
+    let c_content = CString::new(content).unwrap();
     unsafe {
         Guess::from(
             GetLanguageByContent(

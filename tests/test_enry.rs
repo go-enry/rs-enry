@@ -27,7 +27,7 @@ use enry::{
     case("test.hs", "", "Haskell"),
 )]
 fn test_get_language(filename: &str, content: &str, language: &str) {
-    assert_eq!(get_language(filename, content).unwrap(), language);
+    assert_eq!(get_language(filename, content.as_bytes()).unwrap(), language);
 }
 
 
@@ -48,7 +48,7 @@ fn test_get_language_by_content() {
     const CONTENT: &str = "<?php $foo = bar();";
     const LANGUAGE: &str = "PHP";
     const SAFE: bool = true;
-    let guess = get_language_by_content(FILENAME, CONTENT).unwrap();
+    let guess = get_language_by_content(FILENAME, CONTENT.as_bytes()).unwrap();
     assert_eq!(guess.language, LANGUAGE);
     assert_eq!(guess.safe, SAFE);
 }
@@ -59,7 +59,7 @@ fn test_get_language_by_emacs_modeline() {
     const MODELINE: &str = "// -*- font:bar;mode:c++ -*-\ntemplate <typename X> class { X i; };";
     const LANGUAGE: &str = "C++";
     const SAFE: bool = true;
-    let guess = get_language_by_emacs_modeline(MODELINE).unwrap();
+    let guess = get_language_by_emacs_modeline(MODELINE.as_bytes()).unwrap();
     assert_eq!(guess.language, LANGUAGE);
     assert_eq!(guess.safe, SAFE);
 }
@@ -70,7 +70,7 @@ fn test_get_language_by_vim_modeline() {
     const MODELINE: &str = "# vim: noexpandtab: ft=javascript";
     const LANGUAGE: &str = "JavaScript";
     const SAFE: bool = true;
-    let guess = get_language_by_vim_modeline(MODELINE).unwrap();
+    let guess = get_language_by_vim_modeline(MODELINE.as_bytes()).unwrap();
     assert_eq!(guess.language, LANGUAGE);
     assert_eq!(guess.safe, SAFE);
 }
@@ -82,7 +82,7 @@ fn test_get_language_by_vim_modeline() {
     case("# vim: noexpandtab: ft=javascript", "JavaScript", true),
 )]
 fn test_get_language_by_modeline(modeline: &str, language: &str, safe: bool) {
-    let guess = get_language_by_modeline(modeline).unwrap();
+    let guess = get_language_by_modeline(modeline.as_bytes()).unwrap();
     assert_eq!(guess.language, language);
     assert_eq!(guess.safe, safe);
 }
@@ -103,7 +103,7 @@ fn test_get_language_by_shebang() {
     const SHEBANG: &str = "#!/usr/bin/python3";
     const LANGUAGE: &str = "Python";
     const SAFE: bool = true;
-    let guess = get_language_by_shebang(SHEBANG).unwrap();
+    let guess = get_language_by_shebang(SHEBANG.as_bytes()).unwrap();
     assert_eq!(guess.language, LANGUAGE);
     assert_eq!(guess.safe, SAFE);
 }
@@ -122,7 +122,7 @@ fn test_get_mime_type() {
 fn test_is_binary() {
     const CONTENT: &str = "println!('Hello world!\n');";
     const IS_BINARY: bool = false;
-    assert_eq!(is_binary(CONTENT).unwrap(), IS_BINARY);
+    assert_eq!(is_binary(CONTENT.as_bytes()).unwrap(), IS_BINARY);
 }
 
 
@@ -181,7 +181,7 @@ fn test_get_languages() {
     const FILENAME: &str = "test.py";
     const CONTENT: &str = "import os";
     const LANGUAGE: &str = "Python";
-    assert_eq!(get_languages(FILENAME, CONTENT).unwrap(), [LANGUAGE]);
+    assert_eq!(get_languages(FILENAME, CONTENT.as_bytes()).unwrap(), [LANGUAGE]);
 }
 
 

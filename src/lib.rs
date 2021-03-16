@@ -40,7 +40,7 @@ extern "C" {
     // fn GetLanguagesByVimModeline(filename: GoString, content: GoSlice, candidates: GoSlice, result: &mut GoSlice);
 }
 
-pub fn get_languages(filename: &str, content: &str) -> Result<Vec<String>, NulError> {
+pub fn get_languages(filename: &str, content: &[u8]) -> Result<Vec<String>, NulError> {
     let c_filename = CString::new(filename).expect("Can't construct string");
     let c_content = CString::new(content).expect("Can't construct content string");
     let mut go_result = GoSlice::default();
@@ -50,7 +50,7 @@ pub fn get_languages(filename: &str, content: &str) -> Result<Vec<String>, NulEr
     }
 }
 
-pub fn get_language_by_content(filename: &str, content: &str) -> Result<Guess, NulError> {
+pub fn get_language_by_content(filename: &str, content: &[u8]) -> Result<Guess, NulError> {
     let c_filename = CString::new(filename)?;
     let c_content = CString::new(content)?;
     unsafe {
@@ -74,7 +74,7 @@ pub fn get_language_extensions(language: &str) -> Result<Vec<String>, NulError> 
     }
 }
 
-pub fn get_language(filename: &str, content: &str) -> Result<String, NulError> {
+pub fn get_language(filename: &str, content: &[u8]) -> Result<String, NulError> {
     let c_filename = CString::new(filename)?;
     let c_content = CString::new(content)?;
     unsafe {
@@ -106,27 +106,27 @@ pub fn get_language_by_filename(filename: &str) -> Result<Guess, NulError> {
     unsafe { Ok(Guess::from(GetLanguageByFilename(c_filename.as_go_string()))) }
 }
 
-pub fn get_language_by_modeline(content: &str) -> Result<Guess, NulError> {
+pub fn get_language_by_modeline(content: &[u8]) -> Result<Guess, NulError> {
     let c_content = CString::new(content)?;
     unsafe { Ok(Guess::from(GetLanguageByModeline(c_content.as_go_slice()))) }
 }
 
-pub fn get_language_by_shebang(content: &str) -> Result<Guess, NulError> {
+pub fn get_language_by_shebang(content: &[u8]) -> Result<Guess, NulError> {
     let c_content = CString::new(content)?;
     unsafe { Ok(Guess::from(GetLanguageByShebang(c_content.as_go_slice()))) }
 }
 
-pub fn get_language_by_vim_modeline(content: &str) -> Result<Guess, NulError> {
+pub fn get_language_by_vim_modeline(content: &[u8]) -> Result<Guess, NulError> {
     let c_content = CString::new(content)?;
     unsafe { Ok(Guess::from(GetLanguageByVimModeline(c_content.as_go_slice()))) }
 }
 
-pub fn get_language_by_emacs_modeline(content: &str) -> Result<Guess, NulError> {
+pub fn get_language_by_emacs_modeline(content: &[u8]) -> Result<Guess, NulError> {
     let c_content = CString::new(content)?;
     unsafe { Ok(Guess::from(GetLanguageByEmacsModeline(c_content.as_go_slice()))) }
 }
 
-pub fn is_binary(data: &str) -> Result<bool, NulError> {
+pub fn is_binary(data: &[u8]) -> Result<bool, NulError> {
     let c_data = CString::new(data)?;
     unsafe { Ok(IsBinary(c_data.as_go_slice()) == 1) }
 }
@@ -156,7 +156,7 @@ pub fn is_vendor(path: &str) -> Result<bool, NulError> {
     unsafe { Ok(IsVendor(c_path.as_go_string()) == 1) }
 }
 
-pub fn is_generated(path: &str, content: &str) -> Result<bool, NulError> {
+pub fn is_generated(path: &str, content: &[u8]) -> Result<bool, NulError> {
     let c_path = CString::new(path)?;
     let c_content = CString::new(content)?;
     unsafe { Ok(IsGenerated(c_path.as_go_string(), c_content.as_go_slice()) == 1) }

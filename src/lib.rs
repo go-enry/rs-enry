@@ -1,7 +1,5 @@
-use std::ffi::{c_void, CStr, CString};
-use std::io::{BufRead, Error, Read};
-use std::os::raw::{c_char, c_uchar, c_uint};
-use std::ptr::{null, null_mut};
+use std::ffi::CString;
+use std::os::raw::c_uchar;
 
 use crate::go::slice::{GoSlice, ToGoSlice};
 use crate::go::string::{GoString, ToGoString};

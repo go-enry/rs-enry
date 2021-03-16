@@ -1,41 +1,19 @@
 # rs-enry
 Rust bindings for Enry
 
-## Build
+## Prerequisites
 
-```bash
-$ pushd go-enry && make static && popd
-$ cargo build
-```
-
-We build static library for CGo wrapper `libenry` and then make rust bindings through Rust `ffi` library.
+To use this library you should have a Go compiler available on your path.
 
 ## Usage in Rust project
 
-First, add the library as submodule to your project:
 
-```bash
-$ git submodule add git@github.com:go-enry/rs-enry.git
-```
-
-After that specify the path dependency in your `Cargo.toml` like that:
+Simply add this line to your dependency list.
 
 ```toml
 [dependencies]
-enry = { path = "path/to/submodule/rs-enry/" }
+enry = { git = "https://github.com/go-enry/rs-enry", branch = "master" }
 ```
-
-Add search path for library into your `rustc` flags, possible way of doing this is to add following to your `.cargo/config`:
-
-```toml
-# platform here should correspond to your target platform
-[target.platform.enry]
-rustc-link-search = ["path/to/rs-enry/go-enry/.shared"]
-rustc-link-lib = ["enry"]
-```
-
-Full list of platforms supported by Rust can be found [here](https://doc.rust-lang.org/nightly/rustc/platform-support.html).
-
 
 ## Example
 

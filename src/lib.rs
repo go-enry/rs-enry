@@ -1,4 +1,4 @@
-use std::ffi::CString;
+use std::ffi::{CString, NulError};
 use std::os::raw::c_uchar;
 
 use crate::go::slice::{GoSlice, ToGoSlice};
@@ -40,122 +40,129 @@ extern "C" {
     // fn GetLanguagesByVimModeline(filename: GoString, content: GoSlice, candidates: GoSlice, result: &mut GoSlice);
 }
 
-pub fn get_languages(filename: &str, content: &str) -> Vec<String> {
+pub fn get_languages(filename: &str, content: &str) -> Result<Vec<String>, NulError> {
     let c_filename = CString::new(filename).expect("Can't construct string");
     let c_content = CString::new(content).expect("Can't construct content string");
     let mut go_result = GoSlice::default();
     unsafe {
         GetLanguages(c_filename.as_go_string(), c_content.as_go_slice(), &mut go_result);
-        Vec::from(go_result)
+        Ok(Vec::from(go_result))
     }
 }
 
-pub fn get_language_by_content(filename: &str, content: &str) -> Guess {
-    let c_filename = CString::new(filename).unwrap();
-    let c_content = CString::new(content).unwrap();
+pub fn get_language_by_content(filename: &str, content: &str) -> Result<Guess, NulError> {
+    let c_filename = CString::new(filename)?;
+    let c_content = CString::new(content)?;
     unsafe {
-        Guess::from(
-            GetLanguageByContent(
-                c_filename.as_go_string(),
-                c_content.as_go_slice(),
+        Ok(
+            Guess::from(
+                GetLanguageByContent(
+                    c_filename.as_go_string(),
+                    c_content.as_go_slice(),
+                )
             )
         )
     }
 }
 
-pub fn get_language_extensions(language: &str) -> Vec<String> {
-    let c_language = CString::new(language).unwrap();
-    let go_language = c_language.as_go_string();
+pub fn get_language_extensions(language: &str) -> Result<Vec<String>, NulError> {
+    let c_language = CString::new(language)?;
     let mut go_result = GoSlice::default();
     unsafe {
-        GetLanguageExtensions(go_language, &mut go_result);
-        Vec::from(go_result)
+        GetLanguageExtensions(c_language.as_go_string(), &mut go_result);
+        Ok(Vec::from(go_result))
     }
 }
 
-pub fn get_language(filename: &str, content: &str) -> String {
-    let c_filename = CString::new(filename).unwrap();
-    let c_content = CString::new(content).unwrap();
+pub fn get_language(filename: &str, content: &str) -> Result<String, NulError> {
+    let c_filename = CString::new(filename)?;
+    let c_content = CString::new(content)?;
     unsafe {
-        GetLanguage(c_filename.as_go_string(), c_content.as_go_slice()).to_string()
+        Ok(
+            GetLanguage(
+                c_filename.as_go_string(),
+                c_content.as_go_slice(),
+            )
+                .to_string()
+        )
     }
 }
 
-pub fn get_mime_type(path: &str, language: &str) -> String {
-    let c_path = CString::new(path).unwrap();
-    let c_language = CString::new(language).unwrap();
+pub fn get_mime_type(path: &str, language: &str) -> Result<String, NulError> {
+    let c_path = CString::new(path)?;
+    let c_language = CString::new(language)?;
     unsafe {
-        GetMimeType(c_path.as_go_string(), c_language.as_go_string()).to_string()
+        Ok(GetMimeType(c_path.as_go_string(), c_language.as_go_string()).to_string())
     }
 }
 
-pub fn get_language_by_extension(filename: &str) -> Guess {
-    let c_filename = CString::new(filename).unwrap();
-    unsafe { Guess::from(GetLanguageByExtension(c_filename.as_go_string())) }
+pub fn get_language_by_extension(filename: &str) -> Result<Guess, NulError> {
+    let c_filename = CString::new(filename)?;
+    unsafe { Ok(Guess::from(GetLanguageByExtension(c_filename.as_go_string()))) }
 }
 
-pub fn get_language_by_filename(filename: &str) -> Guess {
-    let c_filename = CString::new(filename).unwrap();
-    unsafe { Guess::from(GetLanguageByFilename(c_filename.as_go_string())) }
+pub fn get_language_by_filename(filename: &str) -> Result<Guess, NulError> {
+    let c_filename = CString::new(filename)?;
+    unsafe { Ok(Guess::from(GetLanguageByFilename(c_filename.as_go_string()))) }
 }
 
-pub fn get_language_by_modeline(content: &str) -> Guess {
-    let c_content = CString::new(content).unwrap();
-    unsafe { Guess::from(GetLanguageByModeline(c_content.as_go_slice())) }
+pub fn get_language_by_modeline(content: &str) -> Result<Guess, NulError> {
+    let c_content = CString::new(content)?;
+    unsafe { Ok(Guess::from(GetLanguageByModeline(c_content.as_go_slice()))) }
 }
 
-pub fn get_language_by_shebang(content: &str) -> Guess {
-    let c_content = CString::new(content).unwrap();
-    unsafe { Guess::from(GetLanguageByShebang(c_content.as_go_slice())) }
+pub fn get_language_by_shebang(content: &str) -> Result<Guess, NulError> {
+    let c_content = CString::new(content)?;
+    unsafe { Ok(Guess::from(GetLanguageByShebang(c_content.as_go_slice()))) }
 }
 
-pub fn get_language_by_vim_modeline(content: &str) -> Guess {
-    let c_content = CString::new(content).unwrap();
-    unsafe { Guess::from(GetLanguageByVimModeline(c_content.as_go_slice())) }
+pub fn get_language_by_vim_modeline(content: &str) -> Result<Guess, NulError> {
+    let c_content = CString::new(content)?;
+    unsafe { Ok(Guess::from(GetLanguageByVimModeline(c_content.as_go_slice()))) }
 }
 
-pub fn get_language_by_emacs_modeline(content: &str) -> Guess {
-    let c_content = CString::new(content).unwrap();
-    unsafe { Guess::from(GetLanguageByEmacsModeline(c_content.as_go_slice())) }
+pub fn get_language_by_emacs_modeline(content: &str) -> Result<Guess, NulError> {
+    let c_content = CString::new(content)?;
+    unsafe { Ok(Guess::from(GetLanguageByEmacsModeline(c_content.as_go_slice()))) }
 }
 
-pub fn is_binary(data: &str) -> bool {
-    let c_data = CString::new(data).unwrap();
-    unsafe { IsBinary(c_data.as_go_slice()) == 1 }
+pub fn is_binary(data: &str) -> Result<bool, NulError> {
+    let c_data = CString::new(data)?;
+    unsafe { Ok(IsBinary(c_data.as_go_slice()) == 1) }
 }
 
-pub fn is_configuration(path: &str) -> bool {
-    let c_path = CString::new(path).unwrap();
-    unsafe { IsConfiguration(c_path.as_go_string()) == 1 }
+pub fn is_configuration(path: &str) -> Result<bool, NulError> {
+    let c_path = CString::new(path)?;
+    unsafe { Ok(IsConfiguration(c_path.as_go_string()) == 1) }
 }
 
-pub fn is_documentation(path: &str) -> bool {
-    let c_path = CString::new(path).unwrap();
-    unsafe { IsDocumentation(c_path.as_go_string()) == 1 }
+pub fn is_documentation(path: &str) -> Result<bool, NulError> {
+    let c_path = CString::new(path)?;
+    unsafe { Ok(IsDocumentation(c_path.as_go_string()) == 1) }
 }
 
-pub fn is_dot_file(path: &str) -> bool {
-    let c_path = CString::new(path).unwrap();
-    unsafe { IsDotFile(c_path.as_go_string()) == 1 }
+pub fn is_dot_file(path: &str) -> Result<bool, NulError> {
+    let c_path = CString::new(path)?;
+    unsafe { Ok(IsDotFile(c_path.as_go_string()) == 1) }
 }
 
-pub fn is_image(path: &str) -> bool {
-    let c_path = CString::new(path).unwrap();
-    unsafe { IsImage(c_path.as_go_string()) == 1 }
+pub fn is_image(path: &str) -> Result<bool, NulError> {
+    let c_path = CString::new(path)?;
+    unsafe { Ok(IsImage(c_path.as_go_string()) == 1) }
 }
 
-pub fn is_vendor(path: &str) -> bool {
-    let c_path = CString::new(path).unwrap();
-    unsafe { IsVendor(c_path.as_go_string()) == 1 }
+pub fn is_vendor(path: &str) -> Result<bool, NulError> {
+    let c_path = CString::new(path)?;
+    unsafe { Ok(IsVendor(c_path.as_go_string()) == 1) }
 }
 
-pub fn is_generated(path: &str, content: &str) -> bool {
-    let c_path = CString::new(path).unwrap();
-    let c_content = CString::new(content).unwrap();
-    unsafe { IsGenerated(c_path.as_go_string(), c_content.as_go_slice()) == 1}
+pub fn is_generated(path: &str, content: &str) -> Result<bool, NulError> {
+    let c_path = CString::new(path)?;
+    let c_content = CString::new(content)?;
+    unsafe { Ok(IsGenerated(c_path.as_go_string(), c_content.as_go_slice()) == 1) }
 }
 
-pub fn get_color(language: &str) -> String {
-    let c_language = CString::new(language).unwrap();
-    unsafe { GetColor(c_language.as_go_string()).to_string() }
+pub fn get_color(language: &str) -> Result<String, NulError> {
+    let c_language = CString::new(language)?;
+    unsafe { Ok(GetColor(c_language.as_go_string()).to_string()) }
 }

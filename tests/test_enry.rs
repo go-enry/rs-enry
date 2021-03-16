@@ -27,7 +27,7 @@ use enry::{
     case("test.hs", "", "Haskell"),
 )]
 fn test_get_language(filename: &str, content: &str, language: &str) {
-    assert_eq!(get_language(filename, content), language);
+    assert_eq!(get_language(filename, content).unwrap(), language);
 }
 
 
@@ -36,7 +36,7 @@ fn test_get_language_by_filename() {
     const FILENAME: &str = "pom.xml";
     const LANGUAGE: &str = "Maven POM";
     const SAFE: bool = true;
-    let guess = get_language_by_filename(FILENAME);
+    let guess = get_language_by_filename(FILENAME).unwrap();
     assert_eq!(guess.language, LANGUAGE);
     assert_eq!(guess.safe, SAFE);
 }
@@ -48,7 +48,7 @@ fn test_get_language_by_content() {
     const CONTENT: &str = "<?php $foo = bar();";
     const LANGUAGE: &str = "PHP";
     const SAFE: bool = true;
-    let guess = get_language_by_content(FILENAME, CONTENT);
+    let guess = get_language_by_content(FILENAME, CONTENT).unwrap();
     assert_eq!(guess.language, LANGUAGE);
     assert_eq!(guess.safe, SAFE);
 }
@@ -59,7 +59,7 @@ fn test_get_language_by_emacs_modeline() {
     const MODELINE: &str = "// -*- font:bar;mode:c++ -*-\ntemplate <typename X> class { X i; };";
     const LANGUAGE: &str = "C++";
     const SAFE: bool = true;
-    let guess = get_language_by_emacs_modeline(MODELINE);
+    let guess = get_language_by_emacs_modeline(MODELINE).unwrap();
     assert_eq!(guess.language, LANGUAGE);
     assert_eq!(guess.safe, SAFE);
 }
@@ -70,7 +70,7 @@ fn test_get_language_by_vim_modeline() {
     const MODELINE: &str = "# vim: noexpandtab: ft=javascript";
     const LANGUAGE: &str = "JavaScript";
     const SAFE: bool = true;
-    let guess = get_language_by_vim_modeline(MODELINE);
+    let guess = get_language_by_vim_modeline(MODELINE).unwrap();
     assert_eq!(guess.language, LANGUAGE);
     assert_eq!(guess.safe, SAFE);
 }
@@ -82,19 +82,20 @@ fn test_get_language_by_vim_modeline() {
     case("# vim: noexpandtab: ft=javascript", "JavaScript", true),
 )]
 fn test_get_language_by_modeline(modeline: &str, language: &str, safe: bool) {
-    let guess = get_language_by_modeline(modeline);
+    let guess = get_language_by_modeline(modeline).unwrap();
     assert_eq!(guess.language, language);
     assert_eq!(guess.safe, safe);
 }
 
-#[rstest]
-fn test_get_language_by_extension() {
-    const FILENAME: &str = "test.lisp";
-    const LANGUAGE: &str = "Common Lisp";
-    const SAFE: bool = false;
-    let guess = get_language_by_extension("test.lisp");
-    assert_eq!(guess.language, LANGUAGE);
-    assert_eq!(guess.safe, SAFE);
+#[rstest(
+    filename, language, safe,
+    case("test.lisp", "Common Lisp", false),
+    case("test.path", "", false),
+)]
+fn test_get_language_by_extension(filename: &str, language: &str, safe: bool) {
+    let guess = get_language_by_extension(filename).unwrap();
+    assert_eq!(guess.language, language);
+    assert_eq!(guess.safe, safe);
 }
 
 #[rstest]
@@ -102,7 +103,7 @@ fn test_get_language_by_shebang() {
     const SHEBANG: &str = "#!/usr/bin/python3";
     const LANGUAGE: &str = "Python";
     const SAFE: bool = true;
-    let guess = get_language_by_shebang(SHEBANG);
+    let guess = get_language_by_shebang(SHEBANG).unwrap();
     assert_eq!(guess.language, LANGUAGE);
     assert_eq!(guess.safe, SAFE);
 }
@@ -113,7 +114,7 @@ fn test_get_mime_type() {
     const FILENAME: &str = "test.rb";
     const LANGUAGE: &str = "Ruby";
     const MIME_TYPE: &str = "text/x-ruby";
-    assert_eq!(get_mime_type(FILENAME, LANGUAGE), MIME_TYPE);
+    assert_eq!(get_mime_type(FILENAME, LANGUAGE).unwrap(), MIME_TYPE);
 }
 
 
@@ -121,7 +122,7 @@ fn test_get_mime_type() {
 fn test_is_binary() {
     const CONTENT: &str = "println!('Hello world!\n');";
     const IS_BINARY: bool = false;
-    assert_eq!(is_binary(CONTENT), IS_BINARY);
+    assert_eq!(is_binary(CONTENT).unwrap(), IS_BINARY);
 }
 
 
@@ -132,7 +133,7 @@ fn test_is_binary() {
     case("test/", false),
 )]
 fn test_is_documentation(path: &str, is_documentation_actual: bool) {
-    assert_eq!(is_documentation(path), is_documentation_actual);
+    assert_eq!(is_documentation(path).unwrap(), is_documentation_actual);
 }
 
 
@@ -142,7 +143,7 @@ fn test_is_documentation(path: &str, is_documentation_actual: bool) {
     case("something.py", false),
 )]
 fn test_is_dot(path: &str, is_dot_actual: bool) {
-    assert_eq!(is_dot_file(path), is_dot_actual);
+    assert_eq!(is_dot_file(path).unwrap(), is_dot_actual);
 }
 
 
@@ -152,7 +153,7 @@ fn test_is_dot(path: &str, is_dot_actual: bool) {
     case("some_code.py", false),
 )]
 fn test_is_configuration(path: &str, is_config_actual: bool) {
-    assert_eq!(is_configuration(path), is_config_actual);
+    assert_eq!(is_configuration(path).unwrap(), is_config_actual);
 }
 
 
@@ -163,7 +164,7 @@ fn test_is_configuration(path: &str, is_config_actual: bool) {
     case("openjdk-1000.parquet", false),
 )]
 fn test_is_image(path: &str, is_image_actual: bool) {
-    assert_eq!(is_image(path), is_image_actual);
+    assert_eq!(is_image(path).unwrap(), is_image_actual);
 }
 
 
@@ -171,7 +172,7 @@ fn test_is_image(path: &str, is_image_actual: bool) {
 fn test_get_color() {
     const LANGUAGE: &str = "Go";
     const COLOR: &str = "#00ADD8";
-    assert_eq!(get_color(LANGUAGE), COLOR);
+    assert_eq!(get_color(LANGUAGE).unwrap(), COLOR);
 }
 
 
@@ -180,7 +181,7 @@ fn test_get_languages() {
     const FILENAME: &str = "test.py";
     const CONTENT: &str = "import os";
     const LANGUAGE: &str = "Python";
-    assert_eq!(get_languages(FILENAME, CONTENT), [LANGUAGE]);
+    assert_eq!(get_languages(FILENAME, CONTENT).unwrap(), [LANGUAGE]);
 }
 
 
@@ -192,5 +193,5 @@ fn test_get_language_extensions() {
         ".pyi", ".pyp", ".pyt", ".pyw", ".rpy", ".smk", ".spec", ".tac",
         ".wsgi", ".xpy"
     ];
-    assert_eq!(get_language_extensions(LANGUAGE), EXTENSIONS);
+    assert_eq!(get_language_extensions(LANGUAGE).unwrap(), EXTENSIONS);
 }

@@ -1,11 +1,22 @@
 # rs-enry
-Rust bindings for Enry
+Rust bindings for [go-enry](https://github.com/go-enry/go-enry)
 
-## Prerequisites
+## Usage
+
+*This package is not published on Cargo yet*.
+
+Add this line to your dependency list.
+
+```toml
+[dependencies]
+enry = { git = "https://github.com/go-enry/rs-enry", branch = "master" }
+```
+
+## Build
+
+### Requirements
 
 To use this library you should have a Go compiler available on your path.
-
-## Development
 
 The bindings depend on **go-enry v2.6.1** library that is vendored as a submodule in this project.
 
@@ -17,20 +28,10 @@ git submodule init
 git submodule update
 ```
 
-To run the tests
+### Run tests
 
 ```
 cargo test
-```
-
-## Usage in Rust project
-
-
-Simply add this line to your dependency list.
-
-```toml
-[dependencies]
-enry = { git = "https://github.com/go-enry/rs-enry", branch = "master" }
 ```
 
 ## Example

@@ -5,6 +5,24 @@ Rust bindings for Enry
 
 To use this library you should have a Go compiler available on your path.
 
+## Development
+
+The bindings depend on **go-enry v2.6.1** library that is vendored as a submodule in this project.
+
+```
+git clone --recurse-submodules https://github.com/go-enry/rs-enry
+
+# or
+git submodule init
+git submodule update
+```
+
+To run the tests
+
+```
+cargo test
+```
+
 ## Usage in Rust project
 
 

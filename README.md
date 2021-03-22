@@ -44,10 +44,10 @@ fn main() {
     let filename = "src/lib.rs";
     let content = fs::read_to_string(filename).unwrap();
 
-    println!("{:?}", get_language_by_content(filename, content.as_str()).unwrap());
-    println!("{:?}", get_languages(filename, content.as_str()).unwrap());
+    println!("{:?}", get_language_by_content(filename, content.as_bytes()).unwrap());
+    println!("{:?}", get_languages(filename, content.as_bytes()).unwrap());
     println!("{:?}", get_language_extensions("Rust").unwrap());
-    println!("{:?}", get_language(filename, content.as_str()).unwrap());
+    println!("{:?}", get_language(filename, content.as_bytes()).unwrap());
 }
 ```
 

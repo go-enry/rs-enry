@@ -1,0 +1,12 @@
+[package]
+name = "enry"
+version = "0.1.0"
+authors = ["Maxim Vasilev <Maxim.Vasilev@jetbrains.com>"]
+edition = "2018"
+
+[lib]
+name = "enry"
+path = "src/lib.rs"
+
+[dev-dependencies]
+rstest = "0.6.4"

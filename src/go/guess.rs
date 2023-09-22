@@ -10,9 +10,13 @@ pub struct GoGuess {
 }
 
 
+/// The result of a language guess.
 #[derive(Debug)]
 pub struct Guess {
+    /// Which language it is
     pub language: String,
+    /// If there are more than one possibles languages, the first language
+    /// (alphabetically) will be returned, and this field will be set to false.
     pub safe: bool,
 }
 

@@ -9,7 +9,7 @@ Add this line to your dependency list.
 
 ```toml
 [dependencies]
-enry = { git = "https://github.com/go-enry/rs-enry", branch = "master" }
+enry = { git = "https://github.com/go-enry/rs-enry", branch = "main" }
 ```
 
 ## Build
